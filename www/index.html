@@ -46,8 +46,10 @@
 
 </header>
 <body>
-    <div id="titlePage"></div>
+    <div id="titlePage">
 
+    </div>
+    <div class="logo"></div>
     <div class="calendar" id="theCalendar">
 
         <div class="hour"><span>7 H 00</span></div>
@@ -64,7 +66,7 @@
         <div class="hour"><span>18 H 00</span></div>
         <div class="hour"><span>19 H 00</span></div>
         <div class="hour"><span>20 H 00</span></div>
-
+        <div id="dayEvent"></div>
     </div>
 
     <div class="app">
@@ -75,7 +77,8 @@
         </div>
 
     </div>
-    <div class="logo"></div>
+    <div class="prevDay" onclick="calendar.prevDay()"> < </div>
+    <div class="nextDay" onclick="calendar.nextDay()">></div>
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
     <script type="text/javascript" src="js/Calendar.js"></script>
@@ -83,8 +86,6 @@
         app.initialize();
         calendar.dateTitle();
         calendar.getXml();
-        
-
     </script>
 </body>
 
