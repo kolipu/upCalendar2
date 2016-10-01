@@ -3,13 +3,13 @@ var mm;
 var yyyy;
 var dateWeek;
 var theDay;
-
+var today = new Date();
 
 var calendar = {
     // Application Constructor
 
     dateTitle: function(){
-        var today = new Date();
+        
         dd = today.getDate();
         mm = today.getMonth()+1; //January is 0!
         yyyy = today.getFullYear();
@@ -21,10 +21,11 @@ var calendar = {
             mm='0'+mm
         } 
 
-        today = dd+'/'+mm+'/'+yyyy;
+        var thisDay = dd+'/'+mm+'/'+yyyy;
+
         theDay = yyyy+'-'+mm+'-'+dd;
 
-        document.getElementById("titlePage").innerHTML = today;  
+        document.getElementById("titlePage").innerHTML = thisDay;  
 
               
     },
@@ -47,25 +48,21 @@ var calendar = {
 
         xdr.onload = function(){
             dateWeek = new Object(JSON.parse(xdr.responseText));
-            console.log( dateWeek );
             var key;
-            var pushData;
+            var pushData = "";
             for( key in dateWeek ){
                 if ( dateWeek[key]['DAYSTART'] == theDay ) {
                     var Tstart = dateWeek[key]['TIMESTART'];
                     Tstart = Tstart.split(':');
-                   // console.log( pxStart+'px' );
                     var pxStart = parseInt(Tstart[0])*60;
                     pxStart = pxStart + parseInt(Tstart[1]);
                     // top : pxStart
-                    console.log( pxStart+'px' );
                     var Tend = dateWeek[key]['TIMEEND'];
                     Tend = Tend.split(':');
                     var pxEnd = parseInt(Tend[0])*60;
                     pxEnd = pxEnd + parseInt(Tend[1]);
                     pxHeight = pxEnd - pxStart;
                     // height : pxHeight
-                    console.log( 'height : ' +pxHeight+'px' );
                     pxStart = pxStart - 420;
 
                     //LOCATION
@@ -79,9 +76,8 @@ var calendar = {
 
                 }
             }
-
-            var divCalendar = document.getElementById('theCalendar');
-            divCalendar.innerHTML = divCalendar.innerHTML + pushData;
+            console.log( pushData );
+            document.getElementById('dayEvent').innerHTML = pushData;
         }
         /*xdr.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
@@ -93,14 +89,52 @@ var calendar = {
         xdr.open("GET","http://webart.ovh/upCalendarXml.php");
         xdr.send();
 
-    }
-/*
-    getDayEvent: function(){
-        console.log('yes');
-        
-        var nb = dateWeek.length;
-        console.log( "nb" );
-    }*/
+    },
 
+    pushDate: function(){
+        var key;
+        var pushData = "";
+        for( key in dateWeek ){
+            if ( dateWeek[key]['DAYSTART'] == theDay ) {
+                var Tstart = dateWeek[key]['TIMESTART'];
+                Tstart = Tstart.split(':');
+                var pxStart = parseInt(Tstart[0])*60;
+                pxStart = pxStart + parseInt(Tstart[1]);
+                // top : pxStart
+                var Tend = dateWeek[key]['TIMEEND'];
+                Tend = Tend.split(':');
+                var pxEnd = parseInt(Tend[0])*60;
+                pxEnd = pxEnd + parseInt(Tend[1]);
+                pxHeight = pxEnd - pxStart;
+                // height : pxHeight
+                pxStart = pxStart - 420;
+
+                //LOCATION
+                var dataLoc = '<span>' + dateWeek[key]['LOCATION'] + '</span>';
+                //SUMMARY
+                var dataSum = '<span>' + dateWeek[key]['SUMMARY'] + '</span>';
+                //HORAIRE
+                var dataHoraire = '<span>' + dateWeek[key]['TIMESTART'] + ' - ' + dateWeek[key]['TIMEEND'] + '</span>'
+
+                pushData += '<div class="event" style="top:'+pxStart+'px; height:'+pxHeight+'px;" >' + dataSum + dataLoc + dataHoraire + '</div>';
+
+            }
+        }
+
+        console.log( pushData );
+        document.getElementById('dayEvent').innerHTML = pushData;
+    },
+
+    nextDay: function(){
+        today.setDate( today.getDate() + 1 );
+        this.dateTitle();
+        this.pushDate();
+    },
+
+    prevDay: function(){
+        today.setDate( today.getDate() - 1 );
+        this.dateTitle();
+        this.pushDate();
+    }
     
 };
